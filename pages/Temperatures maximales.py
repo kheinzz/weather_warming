@@ -74,7 +74,7 @@ st_data = st_folium(mymap, width = 725, returned_objects=[], key="map2")
 ####  CHART
 
 # Lire le fichier de liste
-file_list_1 = con.execute('select * from read_csv("../data/Liste_SH_TX_metro.csv")').fetchdf()
+file_list_1 = con.execute('select * from read_csv("./data/Liste_SH_TX_metro.csv")').fetchdf()
 
 # Allow user to choose the source file
 selected_file = st.selectbox("Sélectionnez une station : ", file_list_1['nom_usuel'])
@@ -85,7 +85,7 @@ with st.spinner('Calcul en cours ...'):
     # Parcourir chaque fichier dans la liste
     for index, row in file_list_1.iterrows():
         # Chemin complet vers le fichier CSV
-        file_path = os.path.join("../data/SH_TX_metropole", row['nom_fichier'])
+        file_path = os.path.join("./data/SH_TX_metropole", row['nom_fichier'])
 
         # Connectez-vous à votre base de données DuckDB
         con = dck.connect(database=':memory:', read_only=False)

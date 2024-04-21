@@ -113,7 +113,7 @@ filter_checkbox = st.checkbox("Filtrer le jeu de donnée par station")
 
 # Define a dropdown to select the file name
 if filter_checkbox:
-    file_list = dck.sql('select * from read_csv("../data/Liste_SH_RR_metro.csv")').df()
+    file_list = dck.sql('select * from read_csv("./data/Liste_SH_RR_metro.csv")').df()
     file_names = file_list['nom_usuel'].unique()
     selected_file_name = st.selectbox("Selectionnez un nom de station", file_names)
 else:
@@ -126,11 +126,11 @@ compute_button = st.button("Calcul des graphiques")
 if compute_button:
     # Display a spinner to indicate computation is in progress
     with st.spinner('Calcul en cours ...'):
-        file_list = con.execute('select * from read_csv("../data/Liste_SH_RR_metro.csv")').fetchdf()
+        file_list = con.execute('select * from read_csv("./data/Liste_SH_RR_metro.csv")').fetchdf()
         dfs = []
         for index, row in file_list.iterrows():
             if selected_file_name is None or row['nom_usuel'] == selected_file_name:
-                file_path = os.path.join("../data/SH_RR_metropole", row['nom_fichier'])
+                file_path = os.path.join("./data/SH_RR_metropole", row['nom_fichier'])
                 query = f"SELECT * FROM read_csv('{file_path}')"
                 df = con.execute(query).fetchdf()
                 df['source_file'] = row['nom_fichier']
