@@ -28,7 +28,7 @@ with tab1 :
 ############    TAB 2     ############
 #######################################
 with tab2 : 
-    df = con.execute('select "nom_usuel",  "altitude(m)", "date_debut_serie(YYYYMM)"::text as "date_debut_serie(YYYYMM)", "date_fin_serie(YYYYMM)"::text as "date_fin_serie(YYYYMM)" , "latitude(°)" ,"longitude(°)" from read_csv("../data/Liste_SH_TX_metro.csv")').fetchdf()
+    df = con.execute('select "nom_usuel",  "altitude(m)", "date_debut_serie(YYYYMM)"::text as "date_debut_serie(YYYYMM)", "date_fin_serie(YYYYMM)"::text as "date_fin_serie(YYYYMM)" , "latitude(°)" ,"longitude(°)" from read_csv("./data/Liste_SH_TX_metro.csv")').fetchdf()
 
     st.dataframe(df[["nom_usuel", "altitude(m)", "date_debut_serie(YYYYMM)", "date_fin_serie(YYYYMM)"]], 1000, 200)
     # Create a map object centered around the mean of latitudes and longitudes
