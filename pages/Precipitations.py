@@ -130,7 +130,7 @@ if compute_button:
         dfs = []
         for index, row in file_list.iterrows():
             if selected_file_name is None or row['nom_usuel'] == selected_file_name:
-                file_path = os.path.join("..\data\SH_RR_metropole", row['nom_fichier'])
+                file_path = os.path.join("../data/SH_RR_metropole", row['nom_fichier'])
                 query = f"SELECT * FROM read_csv('{file_path}')"
                 df = con.execute(query).fetchdf()
                 df['source_file'] = row['nom_fichier']
