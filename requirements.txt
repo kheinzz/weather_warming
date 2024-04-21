@@ -62,7 +62,6 @@ six==1.16.0
 smmap==5.0.1
 stack-data==0.6.3
 statsmodels==0.14.1
-streamlit==1.33.0
 streamlit_folium==0.19.1
 tenacity==8.2.3
 toml==0.10.2
