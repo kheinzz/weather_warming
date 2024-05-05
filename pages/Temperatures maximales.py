@@ -41,32 +41,38 @@ average_longitude = sum(lon for _, lon in coordinates) / len(coordinates)
 # Create a map object centered around the mean of latitudes and longitudes
 mymap = folium.Map(location=[average_latitude, average_longitude], zoom_start=6)
 
-# Add markers for each location
+# Define constants
+RADIUS = 5000
+COLORS = ["yellow", "orange", "red", "purple"]
+DEFAULT_COLOR = "gray"
+
+# Iterate over GeoJSON features
 for feature, (lat, lon) in zip(features, coordinates):
     properties = feature['properties']
     
     # Assign color based on 'difference' value
-    color_index = next((i for i, b in enumerate(breaks) if b > properties.get('difference', 0)), len(breaks)-1)
+    color_index = next((i for i, b in enumerate(breaks) if b > properties.get('difference', 0)), len(breaks) - 1)
     
-    print("Color index:", color_index)  # Debug print
+    # Handle color index out of range gracefully
+    if color_index >= len(COLORS):
+        color_index = len(COLORS) - 1
     
-    if color_index >= len(colors):
-        print("Color index out of range!")  # Debug print
-        color_index = len(colors) - 1
-    
+    # Create circle markers
     folium.Circle(
         location=[lat, lon],
-        radius=5000,  # Adjust radius as needed
-        popup="Nom de la station : "+ str(properties.get('nom', '')) + "\n "+"Différence : " + str(properties.get('difference', '')) ,  # Concatenating string with value
-        color='transparent',  # Outline color
+        radius=RADIUS,
+        popup=f"Nom de la station : {properties.get('nom', '')}\nDifférence : {properties.get('difference', '')}",
+        color='transparent',
         fill=True,
-        fill_color=colors[color_index],  # Fill color based on Jenks Natural Breaks Classification
+        fill_color=COLORS[color_index],
         fill_opacity=0.7,
         zoom_control=False,
         scrollWheelZoom=False,
         dragging=False
     ).add_to(mymap)
 
+# Improved file path handling
+file_path = Path("./data/SH_TX_metropole")
 print("La différence de t° minimum observée entre les deux périodes:", min(data), '\n', "La différence de t° maximum observée entre les deux périodes:", max(data))
 
 st_data = st_folium(mymap, width=725, returned_objects=[], key="map2")
@@ -79,10 +85,11 @@ selected_file = st.selectbox("Sélectionnez une station : ", file_list_1['nom_us
 
 # List to store the DataFrames of each CSV file
 dfs = []
+# Append DataFrames to a list for efficient concatenation
+dfs = []
 with st.spinner('Calcul en cours ...'):
     for index, row in file_list_1.iterrows():
-        file_path = Path("./data/SH_TX_metropole") / row['nom_fichier']
-        query = f"SELECT * FROM read_csv('{file_path}')"
+        query = f"SELECT * FROM read_csv('{file_path / row['nom_fichier']}')"
         df = con.execute(query).fetchdf()
         df['source_file'] = row['nom_fichier']
         df['date_debut'] = row['date_debut_serie(YYYYMM)']
@@ -91,6 +98,7 @@ with st.spinner('Calcul en cours ...'):
         dfs.append(df)
 
 final_df = pd.concat(dfs, ignore_index=True)
+
 df_filtered = final_df[final_df['nom_usuel'] == selected_file]
 df_filtered['YYYYMM'] = pd.to_datetime(df_filtered['YYYYMM'], format='%Y%m')
 df_filtered['Month'] = df_filtered['YYYYMM'].dt.month

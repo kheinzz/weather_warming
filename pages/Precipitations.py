@@ -7,8 +7,14 @@ import os
 import pandas as pd
 import jenkspy
 import geojson
-import pathlib
+import numpy as np  
 
+
+st.subheader("Tendances géographiques")
+st.caption("""Comme pour les températures, ici nous comparons la médiane des dix premières années avec la médiane des dix dernières années, l'indicateur
+        représenté par la couleur des points et la soustraction de ces deux valeurs pour chaque station disponible. 
+        Cet indicateur nous permet de voir clairement quels sont les effets actuels du changement climatiques en lissant au maximum l'effet des valeurs extrêmes
+        grâce à la médiane.""")
 # Open a connection to DuckDB
 con = dck.connect(database=':memory:', read_only=False)
 
@@ -103,7 +109,8 @@ st_data = st_folium(mymap, width=725, returned_objects=[], key= "map3")
 ########### CHARTS 
 # Lire le fichier de liste
 
-
+st.subheader("Tendances annuelles et mensuelles")
+st.caption("Si la somme des précipitations annuelle est un bon indicateur des tendances climatiques (lesquelles peuvent aussi varier spatialement), il peut aussi être intéressant de se pencher sur les tendances mensuelles.")
 # Define a dictionary mapping month numbers to French month names
 french_month_names = {1: 'janvier', 2: 'février', 3: 'mars', 4: 'avril', 5: 'mai', 6: 'juin',
                     7: 'juillet', 8: 'août', 9: 'septembre', 10: 'octobre', 11: 'novembre', 12: 'décembre'}
@@ -142,25 +149,28 @@ if compute_button:
         final_df['Month'] = final_df['YYYYMM'].dt.month
         final_df['Year'] = final_df['YYYYMM'].dt.year
         final_df = final_df[final_df['Year'] > 1951]
-        grouped_data = final_df.groupby(['Month', 'Year'])['VALEUR'].mean().reset_index()
+        grouped_data = final_df.groupby(['Month', 'Year'])['VALEUR'].sum().reset_index()
     
 
         #### En premier, on veut un graph qui montre les sommes annuelles et leurs évolutions 
         # Calculate yearly median precipitation
         # print("SOOURRRECEEEEE$$$$$$$$$$$$$$ : ", final_df)
-        yearly_median = final_df.groupby('Year')['VALEUR'].mean().reset_index()
+        yearly_sum = final_df.groupby('Year')['VALEUR'].mean().reset_index()
         
         # Plot yearly median precipitation
         if filter_checkbox and selected_file_name:
             title = f"Somme annuelle des précipitations (mm) pour la station {selected_file_name}"
         else:
             title = "Somme annuelle des précipitations (mm) pour toutes les stations"
-        fig_median = px.scatter(yearly_median, x='Year', y='VALEUR', title=title,
+        fig_median = px.scatter(yearly_sum, x='Year', y='VALEUR', title=title,
                             trendline="ols", labels={'VALEUR': "Précipitations", "Year": "Années"})
         st.plotly_chart(fig_median, theme=None, use_container_width=True)
         
         #### Ensuite on montre les graphs par mois et leurs évolutions dans le temps
         # Plot each month with lines for each year
+
+#### Ensuite on montre les graphs par mois et leurs évolutions dans le temps
+# Plot each month with lines for each year
         for month in range(1, 13):
             data_month = grouped_data[grouped_data["Month"] == month]
             # Get the French month name
@@ -169,6 +179,19 @@ if compute_button:
                 title = f'Précipitations moyennes (mm) par an pour le mois de {month_name_fr} pour la station {selected_file_name} + tendance'
             else:
                 title = f'Précipitations moyennes (mm) par an pour le mois de {month_name_fr} pour toutes les données + tendance'
+            
+            # Calculate trendline using linear regression
+            trend_slope, trend_intercept = np.polyfit(data_month['Year'], data_month['VALEUR'], 1)
+            
+            # Determine trend direction
+            trend_direction = "augmentation" if trend_slope > 0 else "diminution"
+            
+            # Determine trend magnitude
+            trend_magnitude = abs(trend_slope)
+            
+            st.write(f"### {title}")
+            st.write(f"Ce graphique illustre les précipitations moyennes en millimètres pour le mois de {month_name_fr} au fil des années.")
+            st.write(f"La tendance des précipitations pour le mois de {month_name_fr} est une {trend_direction} de {trend_magnitude:.2f} mm par an.")
             fig = px.scatter(data_month, x='Year', y='VALEUR', title=title,
                     color_discrete_sequence=px.colors.qualitative.Plotly, trendline="ols", labels={'VALEUR': "Précipitations",
                                                                                                     "Year": "Années"})
