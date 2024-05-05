@@ -167,18 +167,19 @@ if compute_button:
 
 
         # Filter out non-numeric columns if necessary
-        final_df_numeric = final_df.select_dtypes(include=[np.number])
-        print("DATA : ",final_df_numeric.head())
+        # final_df = final_df.select_dtypes(include=[np.number])
+        print("DATA : ",final_df.head())
         # Now perform the aggregation on the numeric DataFrame
         if filter_checkbox:
-            yearly_data = final_df_numeric.groupby('Year')['VALEUR'].sum().reset_index()
+            yearly_data = final_df.groupby('Year')['VALEUR'].sum().reset_index()
             if selected_file_name:
                 title = f"Somme annuelle des précipitations (mm) pour la station {selected_file_name}"
         else:
-            yearly_data = final_df_numeric.groupby('Year').sum().reset_index()
-            yearly_data = yearly_data.groupby('Year').mean().reset_index()
-
+            final_df['Year'] = final_df['Year'].astype(int)
+            yearly_data = final_df.groupby(['Year', 'source_file'])['VALEUR'].sum().reset_index()
+            yearly_data = yearly_data.groupby('Year')['VALEUR'].mean().reset_index()
             title = "Moyenne annuelle des précipitations (mm) pour toutes les stations"
+
         
         # Plot yearly median precipitation
         print("DATA 2 : ", yearly_data)
@@ -196,7 +197,7 @@ if compute_button:
             if filter_checkbox and selected_file_name:
                 title = f'Précipitations moyennes (mm) par an pour le mois de {month_name_fr} pour la station {selected_file_name} + tendance'
             else:
-                title = f'Précipitations moyennes (mm) par an pour le mois de {month_name_fr} pour toutes les données + tendance'
+                title = f'Précipitations moyennes (mm) par an pour le mois de {month_name_fr} pour toutes les stations + tendance'
             
             # Calculate trendline using linear regression
             trend_slope, trend_intercept = np.polyfit(data_month['Year'], data_month['VALEUR'], 1)
@@ -208,9 +209,9 @@ if compute_button:
             trend_magnitude = abs(trend_slope)
             
             st.write(f"### {title}")
-            st.write(f"Ce graphique illustre les précipitations moyennes en millimètres pour le mois de {month_name_fr} au fil des années.")
-            st.write(f"La tendance des précipitations pour le mois de {month_name_fr} est une {trend_direction} de {trend_magnitude:.2f} mm par an.")
             fig = px.scatter(data_month, x='Year', y='VALEUR',
                     color_discrete_sequence=px.colors.qualitative.Plotly, trendline="ols", labels={'VALEUR': "Précipitations",
                                                                                                     "Year": "Années"})
             st.plotly_chart(fig, theme="streamlit", use_container_width=True)
+            st.write(f"La tendance des précipitations pour le mois de {month_name_fr} est une {trend_direction} de {trend_magnitude:.2f} mm par an.")
+
