@@ -146,7 +146,7 @@ def process_data(file_path_liste, file_path_sh_rr, key_nb):
 #######################################
 ############    TAB 1     ############
 #######################################
-with tab1 : 
+# with tab1 : 
     st.subheader("Bienvenue sur weather warming, cette appli vise à utiliser et valoriser les données ouvertes de [Météo-France](https://meteo.data.gouv.fr/).")
     st.caption("Compte-tenu de la prégnance du changement climatique dans notre quotidien ainsi que dans les médias et les travaux scientifiques, l'accent sera mis sur les séries temporelles de données climatologiques dites \"de référence pour l'étude du changement climatique\".")
     st.caption("Dans un premier temps nous souhaitons explorer ce que renferment ces données, quels sont les fichiers et les variables qu'ils contiennent afin de donner du contexte au reste de l'application et au traitements qui seront réalisés.")
