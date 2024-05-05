@@ -50,32 +50,32 @@ def create_map_with_altitude_colors(geojson_file):
     breaks = jenkspy.jenks_breaks(altitudes, n_classes=4)
     colors = ['green', 'yellow', 'orange', 'red', 'brown']
 
-    legend_template = """
-    {% macro html(this, kwargs) %}
-    <div id='maplegend' class='maplegend' 
-        style='position: absolute; z-index: 9999; background-color: rgba(255, 255, 255, 0.5);
-        border-radius: 6px; padding: 10px; font-size: 10.5px; right: 20px; top: 20px;'>     
-    <div class='legend-scale'>Altitude des stations (m) :
-    <ul class='legend-labels'>  
-        <li><span style='background: green; opacity: 0.75;'></span>0</li>
-        <li><span style='background: yellow; opacity: 0.75;'></span>500</li>
-        <li><span style='background: orange; opacity: 0.75;'></span>1000</li>
-        <li><span style='background: red; opacity: 0.75;'></span>1500</li>
-        <li><span style='background: brown; opacity: 0.75;'></span>2000</li>
-    </ul>
-    </div>
-    </div> 
-    <style type='text/css'>
-    .maplegend .legend-scale ul {margin: 0; padding: 0; color: #0f0f0f;}
-    .maplegend .legend-scale ul li {list-style: none; line-height: 18px; margin-bottom: 1.5px;}
-    .maplegend ul.legend-labels li span {float: left; height: 16px; width: 16px; margin-right: 4.5px;}
-    </style>
-    {% endmacro %}
-    """
-    # Add the legend to the map
-    macro = MacroElement()
-    macro._template = Template(legend_template)
-    mymap.get_root().add_child(macro)
+    # legend_template = """
+    # {% macro html(this, kwargs) %}
+    # <div id='maplegend' class='maplegend' 
+    #     style='position: absolute; z-index: 9999; background-color: rgba(255, 255, 255, 0.5);
+    #     border-radius: 6px; padding: 10px; font-size: 10.5px; right: 20px; top: 20px;'>     
+    # <div class='legend-scale'>Altitude des stations (m) :
+    # <ul class='legend-labels'>  
+    #     <li><span style='background: green; opacity: 0.75;'></span>0</li>
+    #     <li><span style='background: yellow; opacity: 0.75;'></span>500</li>
+    #     <li><span style='background: orange; opacity: 0.75;'></span>1000</li>
+    #     <li><span style='background: red; opacity: 0.75;'></span>1500</li>
+    #     <li><span style='background: brown; opacity: 0.75;'></span>2000</li>
+    # </ul>
+    # </div>
+    # </div> 
+    # <style type='text/css'>
+    # .maplegend .legend-scale ul {margin: 0; padding: 0; color: #0f0f0f;}
+    # .maplegend .legend-scale ul li {list-style: none; line-height: 18px; margin-bottom: 1.5px;}
+    # .maplegend ul.legend-labels li span {float: left; height: 16px; width: 16px; margin-right: 4.5px;}
+    # </style>
+    # {% endmacro %}
+    # """
+    # # Add the legend to the map
+    # macro = MacroElement()
+    # macro._template = Template(legend_template)
+    # mymap.get_root().add_child(macro)
 
     # Add markers for each location
     for feature in features:
