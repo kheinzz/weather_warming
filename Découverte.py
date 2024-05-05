@@ -14,7 +14,7 @@ st.title("Weather warming")
 print('START')
 # Open a connection to DuckDB
 con = dck.connect(database=':memory:', read_only=False)
-tab1, tab2, tab3, tab4 = st.tabs(["Accueil", "Températures", "Précipitations", "Insolation"])
+# tab1, tab2, tab3, tab4 = st.tabs(["Accueil", "Températures", "Précipitations", "Insolation"])
 ####################################
 #### GLOBAL
 #############################
@@ -50,32 +50,32 @@ def create_map_with_altitude_colors(geojson_file):
     breaks = jenkspy.jenks_breaks(altitudes, n_classes=4)
     colors = ['green', 'yellow', 'orange', 'red', 'brown']
 
-    # legend_template = """
-    # {% macro html(this, kwargs) %}
-    # <div id='maplegend' class='maplegend' 
-    #     style='position: absolute; z-index: 9999; background-color: rgba(255, 255, 255, 0.5);
-    #     border-radius: 6px; padding: 10px; font-size: 10.5px; right: 20px; top: 20px;'>     
-    # <div class='legend-scale'>Altitude des stations (m) :
-    # <ul class='legend-labels'>  
-    #     <li><span style='background: green; opacity: 0.75;'></span>0</li>
-    #     <li><span style='background: yellow; opacity: 0.75;'></span>500</li>
-    #     <li><span style='background: orange; opacity: 0.75;'></span>1000</li>
-    #     <li><span style='background: red; opacity: 0.75;'></span>1500</li>
-    #     <li><span style='background: brown; opacity: 0.75;'></span>2000</li>
-    # </ul>
-    # </div>
-    # </div> 
-    # <style type='text/css'>
-    # .maplegend .legend-scale ul {margin: 0; padding: 0; color: #0f0f0f;}
-    # .maplegend .legend-scale ul li {list-style: none; line-height: 18px; margin-bottom: 1.5px;}
-    # .maplegend ul.legend-labels li span {float: left; height: 16px; width: 16px; margin-right: 4.5px;}
-    # </style>
-    # {% endmacro %}
-    # """
-    # # Add the legend to the map
-    # macro = MacroElement()
-    # macro._template = Template(legend_template)
-    # mymap.get_root().add_child(macro)
+    legend_template = """
+    {% macro html(this, kwargs) %}
+    <div id='maplegend' class='maplegend' 
+        style='position: absolute; z-index: 9999; background-color: rgba(255, 255, 255, 0.5);
+        border-radius: 6px; padding: 10px; font-size: 10.5px; right: 20px; top: 20px;'>     
+    <div class='legend-scale'>Altitude des stations (m) :
+    <ul class='legend-labels'>  
+        <li><span style='background: green; opacity: 0.75;'></span>0</li>
+        <li><span style='background: yellow; opacity: 0.75;'></span>500</li>
+        <li><span style='background: orange; opacity: 0.75;'></span>1000</li>
+        <li><span style='background: red; opacity: 0.75;'></span>1500</li>
+        <li><span style='background: brown; opacity: 0.75;'></span>2000</li>
+    </ul>
+    </div>
+    </div> 
+    <style type='text/css'>
+    .maplegend .legend-scale ul {margin: 0; padding: 0; color: #0f0f0f;}
+    .maplegend .legend-scale ul li {list-style: none; line-height: 18px; margin-bottom: 1.5px;}
+    .maplegend ul.legend-labels li span {float: left; height: 16px; width: 16px; margin-right: 4.5px;}
+    </style>
+    {% endmacro %}
+    """
+    # Add the legend to the map
+    macro = MacroElement()
+    macro._template = Template(legend_template)
+    mymap.get_root().add_child(macro)
 
     # Add markers for each location
     for feature in features:
@@ -160,9 +160,11 @@ with tab1 :
                cette application ne permettra pas d'observer l'évolution du climat jusqu'à cette période puisque les séries commencent à partir des années 50 (vous le verrez, chaque série a sa date de début / fin)
                """)
 #######################################
-############    TAB 2     ############
+############    Températures maximales     ############
 #######################################
-with tab2 : 
+# with tab2 : 
+    st.subheader("Températures maximales")
+
     df = con.execute('select "nom_usuel",  "altitude(m)", "date_debut_serie(YYYYMM)"::text as "date_debut_serie(YYYYMM)", "date_fin_serie(YYYYMM)"::text as "date_fin_serie(YYYYMM)" , "latitude(°)" ,"longitude(°)" from read_csv("./data/Liste_SH_TX_metro.csv")').fetchdf()
 
     st.dataframe(df[["nom_usuel", "altitude(m)", "date_debut_serie(YYYYMM)", "date_fin_serie(YYYYMM)"]], 1000, 200)
@@ -180,16 +182,17 @@ with tab2 :
 
     print('TAB 2 OK')
 #######################################
-############    TAB 3     ############
+############   Précipitations     ############
 #######################################
-with tab3 : 
+# with tab3 : 
+    st.subheader("Précipitations")
     df = con.execute('select "nom_usuel",  "altitude(m)", "date_debut_serie(YYYYMM)"::text as "date_debut_serie(YYYYMM)", "date_fin_serie(YYYYMM)"::text as "date_fin_serie(YYYYMM)" , "latitude(°)" ,"longitude(°)" from read_csv("./data/Liste_SH_TX_metro.csv")').fetchdf()
 
     st.dataframe(df[["nom_usuel", "altitude(m)", "date_debut_serie(YYYYMM)", "date_fin_serie(YYYYMM)"]], 1000, 200)
     # Create a map object centered around the mean of latitudes and longitudes
     # Load GeoJSON data
     map_with_altitude_colors_precip = create_map_with_altitude_colors('./data/result_diff_rr.geojson')
-    st_data = st_folium(map_with_altitude_colors_precip, width = 725, returned_objects=[], key="map2")
+    st_data = st_folium(map_with_altitude_colors_precip, width = 725, returned_objects=[], key="map1")
 
 
         ###############//
