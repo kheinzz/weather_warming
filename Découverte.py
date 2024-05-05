@@ -147,59 +147,59 @@ def process_data(file_path_liste, file_path_sh_rr, key_nb):
 ############    TAB 1     ############
 #######################################
 # with tab1 : 
-    st.subheader("Bienvenue sur weather warming, cette appli vise à utiliser et valoriser les données ouvertes de [Météo-France](https://meteo.data.gouv.fr/).")
-    st.caption("Compte-tenu de la prégnance du changement climatique dans notre quotidien ainsi que dans les médias et les travaux scientifiques, l'accent sera mis sur les séries temporelles de données climatologiques dites \"de référence pour l'étude du changement climatique\".")
-    st.caption("Dans un premier temps nous souhaitons explorer ce que renferment ces données, quels sont les fichiers et les variables qu'ils contiennent afin de donner du contexte au reste de l'application et au traitements qui seront réalisés.")
-    st.caption("""Le reste de l'application sera consacré à l'exploration de ces données ainsi qu'à des indicateurs tentant de mettre en exergue le changement climatique, mais aussi les implications de ce dernier sur nos territoires. 
-               En effet, que ce soit du point de vue des températures ou des précipitations, le réchauffement du climat ne semble pas avoir les mêmes conséquences selon les territoires.
-               """)
-    st.subheader("warnings")
-    st.caption("""Une première mise en garde doit être faite concernant cette série temporelle au regard de son objectif. En effet, le changement climatique
-               ou tout du moins ses origines et ses causes prennent racine dans la période de la révolution industrielle et le début de l'emploi massif de ressources fossiles 
-               comme sources d'énergie. Si l'on sait que les quantités de gaz à effet de serre n'ont fait qu'augmenter depuis cette période, le jeu de données étudié au travers de 
-               cette application ne permettra pas d'observer l'évolution du climat jusqu'à cette période puisque les séries commencent à partir des années 50 (vous le verrez, chaque série a sa date de début / fin)
-               """)
+st.subheader("Bienvenue sur weather warming, cette appli vise à utiliser et valoriser les données ouvertes de [Météo-France](https://meteo.data.gouv.fr/).")
+st.caption("Compte-tenu de la prégnance du changement climatique dans notre quotidien ainsi que dans les médias et les travaux scientifiques, l'accent sera mis sur les séries temporelles de données climatologiques dites \"de référence pour l'étude du changement climatique\".")
+st.caption("Dans un premier temps nous souhaitons explorer ce que renferment ces données, quels sont les fichiers et les variables qu'ils contiennent afin de donner du contexte au reste de l'application et au traitements qui seront réalisés.")
+st.caption("""Le reste de l'application sera consacré à l'exploration de ces données ainsi qu'à des indicateurs tentant de mettre en exergue le changement climatique, mais aussi les implications de ce dernier sur nos territoires. 
+            En effet, que ce soit du point de vue des températures ou des précipitations, le réchauffement du climat ne semble pas avoir les mêmes conséquences selon les territoires.
+            """)
+st.subheader("warnings")
+st.caption("""Une première mise en garde doit être faite concernant cette série temporelle au regard de son objectif. En effet, le changement climatique
+            ou tout du moins ses origines et ses causes prennent racine dans la période de la révolution industrielle et le début de l'emploi massif de ressources fossiles 
+            comme sources d'énergie. Si l'on sait que les quantités de gaz à effet de serre n'ont fait qu'augmenter depuis cette période, le jeu de données étudié au travers de 
+            cette application ne permettra pas d'observer l'évolution du climat jusqu'à cette période puisque les séries commencent à partir des années 50 (vous le verrez, chaque série a sa date de début / fin)
+            """)
 #######################################
 ############    Températures maximales     ############
 #######################################
 # with tab2 : 
-    st.subheader("Températures maximales")
+st.subheader("Températures maximales")
 
-    df = con.execute('select "nom_usuel",  "altitude(m)", "date_debut_serie(YYYYMM)"::text as "date_debut_serie(YYYYMM)", "date_fin_serie(YYYYMM)"::text as "date_fin_serie(YYYYMM)" , "latitude(°)" ,"longitude(°)" from read_csv("./data/Liste_SH_TX_metro.csv")').fetchdf()
+df = con.execute('select "nom_usuel",  "altitude(m)", "date_debut_serie(YYYYMM)"::text as "date_debut_serie(YYYYMM)", "date_fin_serie(YYYYMM)"::text as "date_fin_serie(YYYYMM)" , "latitude(°)" ,"longitude(°)" from read_csv("./data/Liste_SH_TX_metro.csv")').fetchdf()
 
-    st.dataframe(df[["nom_usuel", "altitude(m)", "date_debut_serie(YYYYMM)", "date_fin_serie(YYYYMM)"]], 1000, 200)
-    
-    # Example usage:
-    map_with_altitude_colors_temp = create_map_with_altitude_colors('./data/geo_station.geojson')
-    st_data = st_folium(map_with_altitude_colors_temp, width = 725, returned_objects=[], key="map1")
-    
-        ###############//
-    #######//   DROPDOWN 
+st.dataframe(df[["nom_usuel", "altitude(m)", "date_debut_serie(YYYYMM)", "date_fin_serie(YYYYMM)"]], 1000, 200)
+
+# Example usage:
+map_with_altitude_colors_temp = create_map_with_altitude_colors('./data/geo_station.geojson')
+st_data = st_folium(map_with_altitude_colors_temp, width = 725, returned_objects=[], key="map1")
+
     ###############//
-        # Lire le fichier de liste
+#######//   DROPDOWN 
+###############//
+    # Lire le fichier de liste
 
-    process_data("./data/Liste_SH_TX_metro.csv", "./data/SH_TX_metropole", 1)
+process_data("./data/Liste_SH_TX_metro.csv", "./data/SH_TX_metropole", 1)
 
-    print('TAB 2 OK')
+print('TAB 2 OK')
 #######################################
 ############   Précipitations     ############
 #######################################
 # with tab3 : 
-    st.subheader("Précipitations")
-    df = con.execute('select "nom_usuel",  "altitude(m)", "date_debut_serie(YYYYMM)"::text as "date_debut_serie(YYYYMM)", "date_fin_serie(YYYYMM)"::text as "date_fin_serie(YYYYMM)" , "latitude(°)" ,"longitude(°)" from read_csv("./data/Liste_SH_TX_metro.csv")').fetchdf()
+st.subheader("Précipitations")
+df = con.execute('select "nom_usuel",  "altitude(m)", "date_debut_serie(YYYYMM)"::text as "date_debut_serie(YYYYMM)", "date_fin_serie(YYYYMM)"::text as "date_fin_serie(YYYYMM)" , "latitude(°)" ,"longitude(°)" from read_csv("./data/Liste_SH_TX_metro.csv")').fetchdf()
 
-    st.dataframe(df[["nom_usuel", "altitude(m)", "date_debut_serie(YYYYMM)", "date_fin_serie(YYYYMM)"]], 1000, 200)
-    # Create a map object centered around the mean of latitudes and longitudes
-    # Load GeoJSON data
-    map_with_altitude_colors_precip = create_map_with_altitude_colors('./data/result_diff_rr.geojson')
-    st_data = st_folium(map_with_altitude_colors_precip, width = 725, returned_objects=[], key="map1")
+st.dataframe(df[["nom_usuel", "altitude(m)", "date_debut_serie(YYYYMM)", "date_fin_serie(YYYYMM)"]], 1000, 200)
+# Create a map object centered around the mean of latitudes and longitudes
+# Load GeoJSON data
+map_with_altitude_colors_precip = create_map_with_altitude_colors('./data/result_diff_rr.geojson')
+st_data = st_folium(map_with_altitude_colors_precip, width = 725, returned_objects=[], key="map1")
 
 
-        ###############//
-    #######// DATAFRAME 
+    ###############//
+#######// DATAFRAME 
 
-    process_data("./data/Liste_SH_RR_metro.csv", "./data/SH_RR_metropole", 2)
+process_data("./data/Liste_SH_RR_metro.csv", "./data/SH_RR_metropole", 2)
 
-    print('TAB 3 OK')
-        
-        
+print('TAB 3 OK')
+    
+    
