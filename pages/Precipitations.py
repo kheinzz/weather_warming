@@ -129,6 +129,13 @@ else:
 # Define a button to trigger chart computation
 compute_button = st.button("Calcul des graphiques")
 
+####### A FAIRE
+## Si plot par station : 
+# montrer la sommes des mois par ans pour le tout premier plot
+## Si plot pour toute la france : 
+# calculer la moyenne ou médiane de toutes les stations 
+
+
 # Check if the button is clicked
 if compute_button:
     # Display a spinner to indicate computation is in progress
@@ -149,28 +156,39 @@ if compute_button:
         final_df['Month'] = final_df['YYYYMM'].dt.month
         final_df['Year'] = final_df['YYYYMM'].dt.year
         final_df = final_df[final_df['Year'] > 1951]
-        grouped_data = final_df.groupby(['Month', 'Year'])['VALEUR'].sum().reset_index()
+        grouped_data = final_df.groupby(['Month', 'Year'])['VALEUR'].mean().reset_index()
     
 
-        #### En premier, on veut un graph qui montre les sommes annuelles et leurs évolutions 
-        # Calculate yearly median precipitation
-        # print("SOOURRRECEEEEE$$$$$$$$$$$$$$ : ", final_df)
-        yearly_sum = final_df.groupby('Year')['VALEUR'].mean().reset_index()
+####### A FAIRE
+## Si plot par station : 
+# montrer la sommes des mois par ans pour le tout premier plot
+## Si plot pour toute la france : 
+# calculer la moyenne ou médiane de toutes les stations 
+
+
+        # Filter out non-numeric columns if necessary
+        final_df_numeric = final_df.select_dtypes(include=[np.number])
+        print("DATA : ",final_df_numeric.head())
+        # Now perform the aggregation on the numeric DataFrame
+        if filter_checkbox:
+            yearly_data = final_df_numeric.groupby('Year')['VALEUR'].sum().reset_index()
+            if selected_file_name:
+                title = f"Somme annuelle des précipitations (mm) pour la station {selected_file_name}"
+        else:
+            yearly_data = final_df_numeric.groupby('Year').sum().reset_index()
+            yearly_data = yearly_data.groupby('Year').mean().reset_index()
+
+            title = "Moyenne annuelle des précipitations (mm) pour toutes les stations"
         
         # Plot yearly median precipitation
-        if filter_checkbox and selected_file_name:
-            title = f"Somme annuelle des précipitations (mm) pour la station {selected_file_name}"
-        else:
-            title = "Somme annuelle des précipitations (mm) pour toutes les stations"
-        fig_median = px.scatter(yearly_sum, x='Year', y='VALEUR', title=title,
+        print("DATA 2 : ", yearly_data)
+        fig_median = px.scatter(yearly_data, x='Year', y='VALEUR', title=title,
                             trendline="ols", labels={'VALEUR': "Précipitations", "Year": "Années"})
         st.plotly_chart(fig_median, theme=None, use_container_width=True)
         
+
         #### Ensuite on montre les graphs par mois et leurs évolutions dans le temps
         # Plot each month with lines for each year
-
-#### Ensuite on montre les graphs par mois et leurs évolutions dans le temps
-# Plot each month with lines for each year
         for month in range(1, 13):
             data_month = grouped_data[grouped_data["Month"] == month]
             # Get the French month name
@@ -192,7 +210,7 @@ if compute_button:
             st.write(f"### {title}")
             st.write(f"Ce graphique illustre les précipitations moyennes en millimètres pour le mois de {month_name_fr} au fil des années.")
             st.write(f"La tendance des précipitations pour le mois de {month_name_fr} est une {trend_direction} de {trend_magnitude:.2f} mm par an.")
-            fig = px.scatter(data_month, x='Year', y='VALEUR', title=title,
+            fig = px.scatter(data_month, x='Year', y='VALEUR',
                     color_discrete_sequence=px.colors.qualitative.Plotly, trendline="ols", labels={'VALEUR': "Précipitations",
                                                                                                     "Year": "Années"})
             st.plotly_chart(fig, theme="streamlit", use_container_width=True)
