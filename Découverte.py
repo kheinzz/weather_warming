@@ -9,7 +9,7 @@ import jenkspy
 import geojson
 from branca.element import Template, MacroElement
 
-st.title("Weather warming")
+st.title("Analyse des séries mensuelles homogénéisées de météo-france")
 
 print('START')
 # Open a connection to DuckDB
