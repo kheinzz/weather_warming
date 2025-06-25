@@ -9,6 +9,13 @@ import jenkspy
 import geojson
 import pathlib
 
+st.set_page_config(
+    page_title=None,
+    page_icon=None,
+    layout=None,
+    initial_sidebar_state="expanded",
+    menu_items=None
+)
 # Open a connection to DuckDB
 con = dck.connect(database=':memory:', read_only=False)
 # tab1, tab2, tab3 = st.tabs(["Découverte", "Evolution des températures", "Evolution des précipitations"])
