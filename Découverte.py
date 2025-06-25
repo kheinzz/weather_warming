@@ -9,6 +9,14 @@ import jenkspy
 import geojson
 from branca.element import Template, MacroElement
 
+st.set_page_config(
+    page_title=None,
+    page_icon=None,
+    layout=None,
+    initial_sidebar_state="expanded",
+    menu_items=None
+)
+
 st.title("Analyse des séries mensuelles homogénéisées de météo-france")
 
 print('START')
