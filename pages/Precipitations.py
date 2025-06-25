@@ -9,7 +9,13 @@ import jenkspy
 import geojson
 import numpy as np  
 
-
+st.set_page_config(
+    page_title=None,
+    page_icon=None,
+    layout=None,
+    initial_sidebar_state="expanded",
+    menu_items=None
+)
 st.subheader("Tendances géographiques")
 st.caption("""Comme pour les températures, ici nous comparons la médiane des dix premières années avec la médiane des dix dernières années, l'indicateur
         représenté par la couleur des points et la soustraction de ces deux valeurs pour chaque station disponible. 
