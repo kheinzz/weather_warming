@@ -8,6 +8,13 @@ import jenkspy
 import geojson
 from pathlib import Path
 
+st.set_page_config(
+    page_title=None,
+    page_icon=None,
+    layout=None,
+    initial_sidebar_state="expanded",
+    menu_items=None
+)
 
 st.subheader("Données des températures mensuelles maximales")
 st.caption("""Dans cette partie nous allons essayer d'explorer les données disponibles pour essayer d'observer
