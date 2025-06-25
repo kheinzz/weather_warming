@@ -12,7 +12,7 @@ import pathlib
 # Open a connection to DuckDB
 con = dck.connect(database=':memory:', read_only=False)
 # tab1, tab2, tab3 = st.tabs(["Découverte", "Evolution des températures", "Evolution des précipitations"])
-
+st.set_page_config(page_title=Aucun, page_icon=Aucun, layout="centered", initial_sidebar_state="auto", menu_items=Aucun)
 #######################################
 ############    TAB 1     ############
 #######################################
